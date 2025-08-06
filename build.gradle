@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id "org.openapi.generator" version "7.14.0"
+    id 'war'
 }
 
 group = 'ie.kambur'
@@ -10,6 +12,10 @@ java {
     targetCompatibility = JavaVersion.VERSION_21
 }
 
+war {
+    archiveFileName = 'deck-api.war'
+}
+
 repositories {
     mavenCentral()
 }
@@ -17,4 +23,78 @@ repositories {
 dependencies {
     implementation 'org.apache.logging.log4j:log4j-api:2.24.1'
     implementation 'org.apache.logging.log4j:log4j-core:2.24.1'
+
+    implementation 'io.swagger:swagger-annotations:1.6.16'
+
+    // ✅ Jakarta Validation and CDI APIs (WildFly provides implementations)
+    compileOnly 'jakarta.validation:jakarta.validation-api:3.0.2'
+    compileOnly 'jakarta.enterprise:jakarta.enterprise.cdi-api:4.0.1'
+    compileOnly 'jakarta.inject:jakarta.inject-api:2.0.1'  // Add this line
+    compileOnly 'jakarta.ws.rs:jakarta.ws.rs-api:3.1.0'
+
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.19.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.2'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.19.2'
+    compileOnly 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+
+    // JAXB annotations (XmlRootElement, XmlTransient) - Jakarta version
+    compileOnly 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+    runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.3'
+
+    // JavaTimeModule from Jackson
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.2'
+
+    // io.swagger.jaxrs.*
+    implementation 'io.swagger:swagger-jaxrs:1.6.11'
+
+    // RESTEasy core Jakarta-compatible components (Jakarta 3.1 / EE 10)
+    implementation 'org.jboss.resteasy:resteasy-servlet-initializer:6.2.12.Final'
+    implementation 'org.jboss.resteasy:resteasy-core-spi:6.2.12.Final'
+    implementation 'org.jboss.resteasy:resteasy-core:6.2.12.Final'
+    implementation 'org.jboss.resteasy:resteasy-jackson2-provider:6.2.12.Final'
 }
+//configurations.all {
+//    exclude group: "io.swagger", module: "swagger-jaxrs"
+//}
+
+openApiGenerate {
+    inputSpec = "$rootDir/src/main/resources/openapi/shuffledDeck.yaml".toString()
+//    generatorName = "jaxrs-resteasy"
+    generatorName = "jaxrs-spec"
+
+
+    apiPackage = "ie.kambur.Cards.generated"
+    invokerPackage = "ie.kambur.Cards.generated.invoker"
+    modelPackage = "ie.kambur.Cards.generated.model"
+
+    ignoreFileOverride = "$projectDir/.openapi-generator-ignore"
+
+    configOptions = [
+            interfaceOnly: "true",
+            useBeanValidation: "true", // ✅ Enables @NotNull etc.
+            useSwaggerAnnotations: "false",
+            useJaxbAnnotations: "false",
+            withXml: "false",
+            dateLibrary: "java8",
+            "jakarta"             : "true",
+            "useJakartaEe": "true"  // Add this explicitly
+    ]
+
+//    supportingFilesToGenerate = []
+
+    // Additional properties for implementation classes
+//    additionalProperties = [
+//            'implPackage': 'ie.kambur.Cards.service',
+//            'generateImplementationClasses': 'false',
+//            'useJakartaEe': 'true'  // If you're using Jakarta EE
+//    ]
+}
+
+// TODO: Clean the below deprecated stuff
+// Include generated code in compilation
+sourceSets.main.java.srcDir "$buildDir/generate-resources/main/src/gen/java"
+
+// Make sure code is generated before compile
+compileJava.dependsOn tasks.openApiGenerate
