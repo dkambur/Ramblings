@@ -86,8 +86,8 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 						swapsies();
 					
 					// We'll get first random number as start
-					// -1 because number returned is between 0...n and not n-1 as one would expect
-					int card = rnd.nextInt (theDeck.getTotalCards() - 1);
+					// The original code had a bug with deducting 1 from totalCards.
+					int card = rnd.nextInt (theDeck.getTotalCards());
 					
 					// We'll pick first next unused card
 					card = usedCards.nextClearBit (card);
