@@ -12,7 +12,7 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 	/**
 	 * Deck containing all cards
 	 */
-	private OrderedDeck<C> theDeck;
+	final private OrderedDeck<C> theDeck;
 	
 	/**
 	 * Bit is set for each used card
@@ -27,7 +27,7 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 	/**
 	 * Private instance of random
 	 */
-	private Random rnd;
+	final private Random rnd;
 	
 	/**
 	 * Number of cards left in the deck
@@ -42,9 +42,9 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 	
 	/**
 	 * Creates iterator for shuffled deck.
-	 * @param theDeck
+	 * @param theDeck ordered deck to shuffle
 	 */
-	public ShuffledDeck(T theDeck) {
+	public ShuffledDeck(T theDeck, Random rnd) {
 		this.theDeck = theDeck;
 		
 		usedCards = new BitSet (cardsLeft = theDeck.getTotalCards());
@@ -52,7 +52,7 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 		returnedCards.set (0, cardsLeft); 
 				
 		cardsReturned = 0;
-		rnd = new Random();
+		this.rnd = rnd;
 	}
 	
 	/**
@@ -69,13 +69,13 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 		cardsReturned = cardsLeft;
 		cardsLeft = tempInt;		
 	}
-	
+
 	public Iterator<C> iterator() {
-		return new Iterator<C>() {
+		return new Iterator<>() {
 			public boolean hasNext() {
 				return cardsLeft > 0 || cardsReturned > 0;
 			}
-			
+
 			public C next() {
 				
 				if (hasNext()) {
@@ -86,7 +86,7 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 						swapsies();
 					
 					// We'll get first random number as start
-					// -1 because number returned is between 0..n and not n-1 as one would expect
+					// -1 because number returned is between 0...n and not n-1 as one would expect
 					int card = rnd.nextInt (theDeck.getTotalCards() - 1);
 					
 					// We'll pick first next unused card
@@ -121,8 +121,8 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 	/**
 	 * Returns a card to the deck.
 	 * 
-	 * @param card
-	 * @throws NoSuchElementException
+	 * @param card to return
+	 * @throws NoSuchElementException if card was already returned
 	 */
 	public void returnCard (C card) throws NoSuchElementException {
 		int ordinal = card.returnOrdinalPosition();
