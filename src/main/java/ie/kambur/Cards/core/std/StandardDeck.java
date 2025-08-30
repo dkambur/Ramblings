@@ -1,11 +1,15 @@
-package ie.kambur.Cards.std;
+package ie.kambur.Cards.core.std;
 
-import ie.kambur.Cards.interfaces.Card;
-import ie.kambur.Cards.interfaces.OrderedDeck;
+import ie.kambur.Cards.core.interfaces.OrderedDeck;
 
 public class StandardDeck implements OrderedDeck<StandardCard> {
-	
-	@Override
+
+    @Override
+    public String getName() {
+        return "standard52";
+    }
+
+    @Override
 	public StandardCard getCardFromOrdinal(int ordinal) {
 		return new StandardCard(ordinal);
 	}

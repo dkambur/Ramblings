@@ -1,8 +1,8 @@
 package ie.kambur.Cards;
 
 
-import ie.kambur.Cards.std.StandardCard;
-import ie.kambur.Cards.std.StandardDeck;
+import ie.kambur.Cards.core.std.StandardCard;
+import ie.kambur.Cards.core.std.StandardDeck;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

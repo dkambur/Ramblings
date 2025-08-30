@@ -62,14 +62,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - deckState
-              properties:
-                deckState:
-                  type: string
-                  description: Encoded deck state string
-                  example: "eyJ1c2VkQ2FyZHMiOiJBQUFBQUFBPSIsInJldHVybmVkQ2FyZHMiOiJBQUFBQUFBPSIsImNhcmRzTGVmdCI6NTIsImNhcmRzUmV0dXJuZWQiOjAsImRlY2tUeXBlIjoic3RhbmRhcmQ1MiJ9"
+              $ref: '#/components/schemas/DeckState'
       responses:
         '200':
           description: Card drawn successfully
@@ -79,11 +72,9 @@ paths:
                 type: object
                 properties:
                   card:
-                    $ref: '#/components/schemas/Card'
-                  newDeckState:
-                    type: string
-                    description: Updated encoded deck state
-                    example: "eyJ1c2VkQ2FyZHMiOiJBQUFBQUFBPSIsInJldHVybmVkQ2FyZHMiOiJBQUFBQUFBPSIsImNhcmRzTGVmdCI6NTEsImNhcmRzUmV0dXJuZWQiOjB9"
+                    $ref: '#/components/schemas/CardSchema'
+                  deck:
+                    $ref: '#/components/schemas/DeckState'
         '400':
           description: Invalid deck state
           content:
@@ -120,11 +111,10 @@ paths:
                 - deckState
                 - card
               properties:
-                deckState:
-                  type: string
-                  description: Encoded deck state string
+                deck:
+                  $ref: '#/components/schemas/DeckState'
                 card:
-                  $ref: '#/components/schemas/Card'
+                  $ref: '#/components/schemas/CardSchema'
       responses:
         '200':
           description: Card returned successfully
@@ -133,11 +123,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  newDeckState:
-                    type: string
-                    description: Updated encoded deck state
+                  deck:
+                    $ref: '#/components/schemas/DeckState'
                 required:
-                  - newDeckState
+                  - deck
         '400':
           description: Invalid deck state or card
           content:
@@ -177,30 +166,32 @@ components:
         - deckState
         - deckType
 
-    Card:
+    CardSchema:
+    #  oneOf:
+    #    - type: object
+    #      properties:
+    #        suit:
+    #          type: string
+    #          enum: [hearts, diamonds, clubs, spades]
+    #          description: Card suit (for standard playing cards)
+    #          example: "hearts"
+    #        rank:
+    #          type: string
+    #          enum: [A, "2", "3", "4", "5", "6", "7", "8", "9", "10", J, Q, K]
+    #          description: Card rank (for standard playing cards)
+    #          example: "K"
+    #      required:
+    #        - suit
+    #        - rank
       type: object
       properties:
-        ordinalPosition:
-          type: integer
-          description: The card's position in the ordered deck (0-based)
-          example: 25
-        suit:
-          type: string
-          enum: [hearts, diamonds, clubs, spades]
-          description: Card suit (for standard playing cards)
-          example: "hearts"
-        rank:
-          type: string
-          enum: [A, "2", "3", "4", "5", "6", "7", "8", "9", "10", J, Q, K]
-          description: Card rank (for standard playing cards)
-          example: "K"
-        displayName:
-          type: string
-          description: Human-readable card name
-          example: "King of Hearts"
-      required:
-        - ordinalPosition
-        - displayName
+        any:
+          x-jackson-type: com.fasterxml.jackson.databind.JsonNode
+      additionalProperties: false
+      description: |
+          Placeholder for non-standard cards (e.g. Uno, Tarot, custom decks).
+          Structure not specified yet.
+
 
     Error:
       type: object

@@ -1,4 +1,4 @@
-package ie.kambur.Cards.interfaces;
+package ie.kambur.Cards.core.interfaces;
 
 /**
  * Abstraction of card in any deck
@@ -10,11 +10,11 @@ public interface Card {
 	/**
 	 * @return Stringified representation of a card
 	 */
-	public String toString();
+	String toString();
 	
 	/**
 	 * @return ordinal position of the card in ordered deck
 	 */
-	public int returnOrdinalPosition();
+	int returnOrdinalPosition();
 	
 }

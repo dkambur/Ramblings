@@ -71,6 +71,13 @@ openApiGenerate {
 
     ignoreFileOverride = "$projectDir/.openapi-generator-ignore"
 
+    typeMappings = [
+            "CardSchema" : "JsonNode"
+    ]
+    importMappings = [
+            "JsonNode" : "com.fasterxml.jackson.databind.JsonNode"
+    ]
+
     configOptions = [
             interfaceOnly: "true",
             useBeanValidation: "true", // ✅ Enables @NotNull etc.
@@ -79,6 +86,7 @@ openApiGenerate {
             withXml: "false",
             dateLibrary: "java8",
             "jakarta"             : "true",
+            openApiNullable: "false",
             "useJakartaEe": "true"  // Add this explicitly
     ]
 
