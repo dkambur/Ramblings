@@ -91,7 +91,7 @@ public class DeckApiServiceImpl implements DeckApi {
             theResponse.deck(new DeckState(Base64.getEncoder().encodeToString(SuffledDeckJsonSerialiser.serialise(theDeck)), deckType));
             return theResponse;
         } catch (IOException | ClassNotFoundException e) {
-            throw new IllegalStateException("Card draw failed", e);
+            throw new IllegalStateException("Card return failed", e);
         }
     }
 }
