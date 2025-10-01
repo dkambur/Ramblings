@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: ramblings-app
-          image: ghcr.io/dkambur/ramblings:latest
+          image: ghcr.io/dkambur/ramblings:$IMAGE_TAG
           ports:
             - containerPort: 8080
               name: http
