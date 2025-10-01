@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ toLower(github.repository) }}
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build-and-push:
@@ -95,6 +95,9 @@ jobs:
           else
             IMAGE_TAG="${{ github.ref_name }}"
           fi
+          
+          # Must be lowercased for k8s compatibility
+          IMAGE_NAME=$(echo "${{ env.IMAGE_NAME }}" | tr '[:upper:]' '[:lower:]')
           
           # Update deployment with new image
           kubectl set image deployment/ramblings-app \
