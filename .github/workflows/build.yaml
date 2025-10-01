@@ -61,3 +61,67 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/arm64
           file: docker/Dockerfile
+
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Verify kubectl access
+        run: |
+          kubectl version --client
+          kubectl get pods -n ramblings || echo "No pods yet"
+
+      - name: Deploy to Kubernetes
+        run: |
+          # Determine the image tag based on branch
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            IMAGE_TAG="latest"
+          else
+            IMAGE_TAG="${{ github.ref_name }}"
+          fi
+          
+          # Update deployment with new image
+          kubectl set image deployment/ramblings-app \
+            ramblings-app=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG} \
+            -n ramblings --record || \
+          kubectl create deployment ramblings-app \
+            --image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG} \
+            -n ramblings
+
+          # Expose the service if it doesn't exist
+          kubectl expose deployment ramblings-app \
+            --type=LoadBalancer \
+            --port=80 \
+            --target-port=8080 \
+            -n ramblings || echo "Service already exists"
+
+      - name: Wait for deployment rollout
+        run: |
+          kubectl rollout status deployment/ramblings-app -n ramblings --timeout=5m
+
+      - name: Get deployment status
+        run: |
+          echo "Deployment status:"
+          kubectl get deployment ramblings-app -n ramblings
+          echo ""
+          echo "Pods:"
+          kubectl get pods -n ramblings -l app=ramblings-app
+          echo ""
+          echo "Service:"
+          kubectl get service ramblings-app -n ramblings
