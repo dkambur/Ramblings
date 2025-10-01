@@ -96,6 +96,7 @@ jobs:
             IMAGE_TAG="${{ github.ref_name }}"
           fi
           
+          export IMAGE_TAG
           envsubst < kubernetes/k8s-deployment.yaml | kubectl apply -f -
 
       - name: Wait for deployment rollout
