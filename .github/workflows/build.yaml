@@ -89,23 +89,14 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          # Determine the image tag based on branch
+          # Determine the image tag based on branch - LEFTOVER!!!
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
             IMAGE_TAG="latest"
           else
             IMAGE_TAG="${{ github.ref_name }}"
           fi
           
-          # Must be lowercased for k8s compatibility
-          IMAGE_NAME=$(echo "${{ env.IMAGE_NAME }}" | tr '[:upper:]' '[:lower:]')
-          
-          # Update deployment with new image
-          kubectl set image deployment/ramblings-app \
-            ramblings-app=${{ env.REGISTRY }}/${IMAGE_NAME}:${IMAGE_TAG} \
-            -n ramblings --record || \
-          kubectl create deployment ramblings-app \
-            --image=${{ env.REGISTRY }}/${IMAGE_NAME}:${IMAGE_TAG} \
-            -n ramblings
+          kubectl apply -f kubernetes/k8s-deployment.yaml
 
       - name: Wait for deployment rollout
         run: |
