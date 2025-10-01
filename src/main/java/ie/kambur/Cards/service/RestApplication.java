@@ -16,6 +16,7 @@ public class RestApplication extends Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(DeckApiServiceImpl.class);  // Add your controller here
+        classes.add(Health.class);
         return classes;
     }
 }
