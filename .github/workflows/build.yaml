@@ -101,10 +101,10 @@ jobs:
           
           # Update deployment with new image
           kubectl set image deployment/ramblings-app \
-            ramblings-app=${{ env.REGISTRY }}/${{ IMAGE_NAME }}:${IMAGE_TAG} \
+            ramblings-app=${{ env.REGISTRY }}/${IMAGE_NAME}:${IMAGE_TAG} \
             -n ramblings --record || \
           kubectl create deployment ramblings-app \
-            --image=${{ env.REGISTRY }}/${{ IMAGE_NAME }}:${IMAGE_TAG} \
+            --image=${{ env.REGISTRY }}/${IMAGE_NAME}:${IMAGE_TAG} \
             -n ramblings
 
       - name: Wait for deployment rollout
