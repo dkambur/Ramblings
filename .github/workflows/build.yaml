@@ -2,7 +2,7 @@ name: Build and Push to GHCR
 
 on:
   push:
-    branches: [ main, develop, add-rest-interface ]
+    branches: [ main ]
     tags:
       - 'v*'
   pull_request:
