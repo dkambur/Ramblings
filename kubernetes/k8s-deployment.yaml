@@ -18,6 +18,7 @@ spec:
     spec:
       containers:
         - name: ramblings-app
+          # FIXME: this image name needs fixing - hardcoded to avoid problems with upper and lowercase
           image: ghcr.io/dkambur/ramblings:$IMAGE_TAG
           ports:
             - containerPort: 8080
