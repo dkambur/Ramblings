@@ -42,7 +42,7 @@ public class DeckApiServiceImpl implements DeckApi {
 
             byte[] serialisedDeck = SuffledDeckJsonSerialiser.serialise(randomisedDeck);
 
-            // TODO: This is shit.
+            // TODO: Remove Base64 encoding and decoding into separate class.
             return new DeckState(Base64.getEncoder().encodeToString(serialisedDeck), deckType);
         } catch (IOException e) {
             throw new IllegalStateException("Deck creation failed", e);
