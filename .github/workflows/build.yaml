@@ -19,6 +19,9 @@ jobs:
       contents: read
       packages: write
 
+    outputs:
+      IMAGE_TAG: ${{ steps.vars.outputs.IMAGE_TAG }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -33,6 +36,15 @@ jobs:
       - name: Build with Gradle
         run: gradle war
 
+      - name: Set image tag
+        id: vars
+        run: |
+          SHORT_SHA=${GITHUB_SHA::7}
+          IMAGE_TAG="sha-${SHORT_SHA}"
+          echo "SHORT_SHA=${SHORT_SHA}" >> $GITHUB_ENV
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_OUTPUT        
+
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
@@ -46,9 +58,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=sha
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+            ${{ github.ref_name == 'main' && format('{0}/{1}:latest', env.REGISTRY, env.IMAGE_NAME) || '' }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -64,6 +75,8 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: ${{ needs.build-and-push.outputs.IMAGE_TAG }}
 
     steps:
       - name: Checkout code
@@ -87,14 +100,6 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          # Determine the image tag based on branch - LEFTOVER!!!
-          #if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-          #  IMAGE_TAG="latest"
-          #else
-          #  IMAGE_TAG="${{ github.ref_name }}"
-          #fi
-          IMAGE_TAG="sha-${{ env.SHORT_SHA }}"
-          
           export IMAGE_TAG
           envsubst < kubernetes/k8s-deployment.yaml | kubectl apply -f -
 
