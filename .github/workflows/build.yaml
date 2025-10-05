@@ -102,7 +102,7 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          export IMAGE_TAG
+          export IMAGE_TAG IMAGE_NAME
           envsubst < kubernetes/k8s-deployment.yaml | kubectl apply -f -
 
       - name: Wait for deployment rollout
