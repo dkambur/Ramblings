@@ -78,6 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IMAGE_TAG: ${{ needs.build-and-push.outputs.IMAGE_TAG }}
+      IMAGE_NAME: ${{ needs.build-and-push.outputs.IMAGE_NAME }}
 
     steps:
       - name: Checkout code
