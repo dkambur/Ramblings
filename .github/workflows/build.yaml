@@ -93,7 +93,7 @@ jobs:
           #else
           #  IMAGE_TAG="${{ github.ref_name }}"
           #fi
-          IMAGE_TAG="${{ github.sha }}"
+          IMAGE_TAG="sha-${{ env.SHORT_SHA }}"
           
           export IMAGE_TAG
           envsubst < kubernetes/k8s-deployment.yaml | kubectl apply -f -
