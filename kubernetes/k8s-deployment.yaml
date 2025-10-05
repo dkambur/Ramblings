@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: ramblings-app
-          image: gchr.io/$IMAGE_NAME:$IMAGE_TAG
+          image: ghcr.io/$IMAGE_NAME:$IMAGE_TAG
           ports:
             - containerPort: 8080
               name: http
