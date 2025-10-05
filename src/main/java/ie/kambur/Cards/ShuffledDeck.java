@@ -1,16 +1,30 @@
 package ie.kambur.Cards;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-import ie.kambur.Cards.interfaces.Card;
-import ie.kambur.Cards.interfaces.OrderedDeck;
+import ie.kambur.Cards.core.interfaces.Card;
+import ie.kambur.Cards.core.interfaces.OrderedDeck;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements Iterable<C> {
-	/**
-	 * Deck containing all cards
+public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements Iterable<C>, Externalizable {
+    protected static final Logger logger = LogManager.getLogger(ShuffledDeck.class);
+
+
+    public OrderedDeck<C> getTheDeck() {
+        return theDeck;
+    }
+
+    /**
+	 * Deck containing all cards.
+     * TODO: transient
 	 */
 	private OrderedDeck<C> theDeck;
 	
@@ -27,7 +41,7 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 	/**
 	 * Private instance of random
 	 */
-	private Random rnd;
+    transient private Random rnd;
 	
 	/**
 	 * Number of cards left in the deck
@@ -42,9 +56,9 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 	
 	/**
 	 * Creates iterator for shuffled deck.
-	 * @param theDeck
+	 * @param theDeck ordered deck to shuffle
 	 */
-	public ShuffledDeck(T theDeck) {
+	public ShuffledDeck(T theDeck, Random rnd) {
 		this.theDeck = theDeck;
 		
 		usedCards = new BitSet (cardsLeft = theDeck.getTotalCards());
@@ -52,8 +66,14 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 		returnedCards.set (0, cardsLeft); 
 				
 		cardsReturned = 0;
-		rnd = new Random();
+		this.rnd = rnd;
 	}
+
+    /**
+     * Only for externalisation
+     */
+    public ShuffledDeck() {
+    }
 	
 	/**
 	 * Swaps used and returned cards
@@ -69,13 +89,13 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 		cardsReturned = cardsLeft;
 		cardsLeft = tempInt;		
 	}
-	
+
 	public Iterator<C> iterator() {
-		return new Iterator<C>() {
+		return new Iterator<>() {
 			public boolean hasNext() {
 				return cardsLeft > 0 || cardsReturned > 0;
 			}
-			
+
 			public C next() {
 				
 				if (hasNext()) {
@@ -86,8 +106,8 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 						swapsies();
 					
 					// We'll get first random number as start
-					// -1 because number returned is between 0..n and not n-1 as one would expect
-					int card = rnd.nextInt (theDeck.getTotalCards() - 1);
+					// The original code had a bug with deducting 1 from totalCards.
+					int card = rnd.nextInt (theDeck.getTotalCards());
 					
 					// We'll pick first next unused card
 					card = usedCards.nextClearBit (card);
@@ -121,8 +141,8 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 	/**
 	 * Returns a card to the deck.
 	 * 
-	 * @param card
-	 * @throws NoSuchElementException
+	 * @param card to return
+	 * @throws NoSuchElementException if card was already returned
 	 */
 	public void returnCard (C card) throws NoSuchElementException {
 		int ordinal = card.returnOrdinalPosition();
@@ -135,4 +155,28 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 		else
 			throw new NoSuchElementException ("Card already returned");
 	}
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        logger.debug("Serialising {}", theDeck.getName());
+        out.writeUTF(theDeck.getName());
+        out.writeInt(cardsLeft);
+        out.writeInt(cardsReturned);
+        out.writeObject(usedCards.toLongArray());
+        out.writeObject(returnedCards.toLongArray());
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        String theDeckName = in.readUTF();
+        logger.debug("Deserialising {}", theDeckName);
+        theDeck = (OrderedDeck<C>) DeckSingletonRegistry.getInstance().getDeck(theDeckName);
+        cardsLeft = in.readInt();
+        cardsReturned = in.readInt();
+        usedCards = BitSet.valueOf((long[]) in.readObject());
+        returnedCards = BitSet.valueOf((long[]) in.readObject());
+
+        // TODO: Utmost rubbish
+        rnd = new Random();
+    }
 }

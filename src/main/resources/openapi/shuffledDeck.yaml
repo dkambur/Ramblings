@@ -1,0 +1,223 @@
+openapi: 3.0.3
+info:
+  title: ShuffledDeck API
+  description: |
+    A stateless API for managing shuffled card decks. The deck state is encoded as a compact string
+    containing the BitSet states and counters, allowing complete stateless operation without external storage.
+  version: 1.0.0
+  contact:
+    name: Cards API
+    email: dalen.kambur@gmail.com
+
+paths:
+  /deck/create:
+    post:
+      summary: Create a new shuffled deck
+      description: |
+        Creates a new shuffled deck with the specified deck type and optional random seed.
+        Returns the initial deck state as an encoded string.
+      operationId: createDeck
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - deckType
+              properties:
+                deckType:
+                  type: string
+                  enum: [standard52]
+                  description: Type of deck to create
+                  example: standard52
+            examples:
+              standard_deck:
+                summary: Standard 52-card deck
+                value:
+                  deckType: standard52
+      responses:
+        '200':
+          description: Deck created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeckState'
+        '400':
+          description: Invalid deck type or parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /deck/draw:
+    patch:
+      summary: Draw the next card from the deck
+      description: |
+        Draws the next card from the shuffled deck using the iterator's next() method.
+        Automatically handles swapping between used and returned cards when needed.
+      operationId: drawCard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeckState'
+      responses:
+        '200':
+          description: Card drawn successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  card:
+                    $ref: '#/components/schemas/CardSchema'
+                  deck:
+                    $ref: '#/components/schemas/DeckState'
+        '400':
+          description: Invalid deck state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                required:
+                  - card
+                  - newDeckState
+        '404':
+          description: Deck is empty (no more cards available)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                example:
+                  error: "DECK_EMPTY"
+                  message: "No more cards available in deck"
+
+  /deck/return:
+    put:
+      summary: Return a card to the deck
+      description: |
+        Returns a card to the deck's return pile. The card must not already be in the return pile.
+        Uses inverse logic with returnedCards BitSet.
+      operationId: returnCard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - deckState
+                - card
+              properties:
+                deck:
+                  $ref: '#/components/schemas/DeckState'
+                card:
+                  $ref: '#/components/schemas/CardSchema'
+      responses:
+        '200':
+          description: Card returned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deck:
+                    $ref: '#/components/schemas/DeckState'
+                required:
+                  - deck
+        '400':
+          description: Invalid deck state or card
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Card already returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                example:
+                  error: "CARD_ALREADY_RETURNED"
+                  message: "Card already returned"
+
+components:
+  schemas:
+    DeckState:
+      type: object
+      properties:
+        deckState:
+          type: string
+          description: |
+            Base64 encoded JSON containing the complete deck state:
+            - usedCards: Base64 encoded BitSet
+            - returnedCards: Base64 encoded BitSet  
+            - cardsLeft: integer
+            - cardsReturned: integer
+            - deckType: string identifying the deck type
+          example: "eyJ1c2VkQ2FyZHMiOiJBQUFBQUFBPSIsInJldHVybmVkQ2FyZHMiOiJBQUFBQUFBPSIsImNhcmRzTGVmdCI6NTIsImNhcmRzUmV0dXJuZWQiOjAsImRlY2tUeXBlIjoic3RhbmRhcmQ1MiJ9"
+        deckType:
+          type: string
+          description: Type of deck created
+          example: "standard52"
+      required:
+        - deckState
+        - deckType
+
+    CardSchema:
+    #  oneOf:
+    #    - type: object
+    #      properties:
+    #        suit:
+    #          type: string
+    #          enum: [hearts, diamonds, clubs, spades]
+    #          description: Card suit (for standard playing cards)
+    #          example: "hearts"
+    #        rank:
+    #          type: string
+    #          enum: [A, "2", "3", "4", "5", "6", "7", "8", "9", "10", J, Q, K]
+    #          description: Card rank (for standard playing cards)
+    #          example: "K"
+    #      required:
+    #        - suit
+    #        - rank
+      type: object
+      properties:
+        any:
+          x-jackson-type: com.fasterxml.jackson.databind.JsonNode
+      additionalProperties: false
+      description: |
+          Placeholder for non-standard cards (e.g. Uno, Tarot, custom decks).
+          Structure not specified yet.
+
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error code
+          example: "INVALID_DECK_STATE"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "The provided deck state is invalid or corrupted"
+        details:
+          type: object
+          additionalProperties: true
+          description: Additional error details
+      required:
+        - error
+        - message
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for authentication
+
+security:
+  - ApiKeyAuth: []
