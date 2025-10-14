@@ -46,3 +46,8 @@ Serialisation of ShuffledDeck should suffice but one must implement `CardJsonSer
 ```dalen@Dalens-MacBook-Pro tomcat % bin/catalina.sh start```
 ```cp build/libs/deck-api.war ~/opt/tomcat/webapps ```
 
+## K8s service peekaboo
+
+```bash
+wget http://ramblings-app.ramblings.svc.cluster.local:8080/deck-api/health
+```

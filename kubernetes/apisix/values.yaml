@@ -94,7 +94,7 @@ topologySpreadConstraints: []
 # This value will be set on apisix container's environment variable TZ.
 # You may need to set the timezone to be consistent with your local time zone,
 # otherwise the apisix's logs may used to retrieve event maybe in wrong timezone.
-timezone: ""
+timezone: "UTC"
 
 # -- extraEnvVars An array to add extra env vars
 # e.g:
@@ -277,11 +277,11 @@ metrics:
 
 apisix:
   # -- Enable nginx IPv6 resolver
-  enableIPv6: true
+  enableIPv6: false
   enableHTTP2: true
 
   # -- Whether the APISIX version number should be shown in Server header
-  enableServerTokens: true
+  enableServerTokens: false
 
   # -- Use Pod metadata.uid as the APISIX id.
   setIDFromPodUID: false
@@ -394,6 +394,7 @@ apisix:
       # -- The client IP CIDR allowed to access Apache APISIX Admin API service.
       ipList:
         - 127.0.0.1/24
+        - 10.0.0.0/16
     # -- Using ingress access Apache APISIX admin service
     ingress:
       enabled: false
@@ -531,7 +532,7 @@ apisix:
 
   prometheus:
     # ref: https://apisix.apache.org/docs/apisix/plugins/prometheus/
-    enabled: false
+    enabled: true
     # -- path of the metrics endpoint
     path: /apisix/prometheus/metrics
     # -- prefix of the metrics
@@ -620,6 +621,11 @@ etcd:
   prefix: "/apisix"
   # -- Set the timeout value in seconds for subsequent socket operations from apisix to etcd cluster
   timeout: 30
+
+  persistence:
+    enabled: true
+    storageClass: local-path
+    size: 1Gi
 
   # -- if etcd.enabled is true, set more values of bitnamilegacy/etcd helm chart
   auth:
