@@ -8,7 +8,7 @@ This is to be automated one day :)
 
 ## Create Deck
 
-```
+```bash
 curl -X POST http://localhost:8080/deck-api/deck/create -H 'Content-Type: application/json'  -d '{
 "deckType": "standard52"
 }'
@@ -16,17 +16,23 @@ curl -X POST http://localhost:8080/deck-api/deck/create -H 'Content-Type: applic
 
 ## Draw a card
 
+```bash
 curl -X PATCH http://localhost:8080/deck-api/deck/draw  -H 'Content-Type: application/json'  -d '{
 "deckState":"rO0ABXcUAApzdGFuZGFyZDUyAAAANAAAAAB1cgACW0p4IAS1ErF1kwIAAHhwAAAAAHVxAH4AAAAAAAEAD////////w==","deckType":"standard52"
 }'
+```
 
 ## Return a card
+```bash
 curl -X PUT http://localhost:8080/deck-api/deck/return  -H 'Content-Type: application/json'  -d '{
 "card":{"rank":"KING","suit":"CLUBS"},"deck":{"deckState":"rO0ABXcUAApzdGFuZGFyZDUyAAAAMwAAAAB1cgACW0p4IAS1ErF1kwIAAHhwAAAAAQAAAAACAAAAdXEAfgAAAAAAAQAP////////","deckType":"standard52"}
 }'
+```
 
 ## Health monitoring 
+```bash
 curl http://localhost:8080/deck-api/health
+```
 
 # Adding new type of Deck
 
@@ -43,8 +49,10 @@ Serialisation of ShuffledDeck should suffice but one must implement `CardJsonSer
 
 ## Tomcat manual deploy
 
-```dalen@Dalens-MacBook-Pro tomcat % bin/catalina.sh start```
-```cp build/libs/deck-api.war ~/opt/tomcat/webapps ```
+```bash
+bin/catalina.sh start
+build/libs/deck-api.war ~/opt/tomcat/webapps 
+```
 
 ## K8s service peekaboo
 
