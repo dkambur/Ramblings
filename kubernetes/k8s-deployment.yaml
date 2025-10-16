@@ -48,7 +48,7 @@ metadata:
   name: ramblings-app
   namespace: ramblings
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: ramblings-app
   ports:
