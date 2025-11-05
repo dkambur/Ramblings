@@ -187,7 +187,7 @@
     # -- Apache APISIX service settings for tls
     tls:
       servicePort: 443
-      # nodePort: 4443
+      nodePort: 31640
 
     # -- Apache APISIX service settings for stream. L4 proxy (TCP/UDP)
     stream:
@@ -263,7 +263,7 @@
   metrics:
     serviceMonitor:
       # -- Enable or disable Apache APISIX serviceMonitor
-      enabled: false
+      enabled: true
       # -- namespace where the serviceMonitor is deployed, by default, it is the same as the namespace of the apisix
       namespace: ""
       # -- name of the serviceMonitor, by default, it is the same as the apisix fullname
@@ -306,7 +306,7 @@
             path: ""
 
     ssl:
-      enabled: false
+      enabled: true
       containerPort: 9443
       # -- Support multiple https ports, See [Configuration](https://github.com/apache/apisix/blob/0bc65ea9acd726f79f80ae0abd8f50b7eb172e3d/conf/config-default.yaml#L99)
       additionalContainerPorts: []
@@ -393,8 +393,8 @@
       allow:
         # -- The client IP CIDR allowed to access Apache APISIX Admin API service.
         ipList:
-          - 127.0.0.1/24
-          - 10.0.0.0/16
+          - 127.0.0.1/32
+          - 10.0.0.0/8
       # -- Using ingress access Apache APISIX admin service
       ingress:
         enabled: false
