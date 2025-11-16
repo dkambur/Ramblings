@@ -271,7 +271,8 @@
       # -- interval at which metrics should be scraped
       interval: 15s
       # -- @param serviceMonitor.labels ServiceMonitor extra labels
-      labels: {}
+      labels:
+        release: kube-prom-stack
       # -- @param serviceMonitor.annotations ServiceMonitor annotations
       annotations: {}
 
