@@ -2,7 +2,7 @@
 <Configuration status="INFO">
     <Appenders>
         <Console name="LogToConsole" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{yyyy-MM-dd'T'HH:mm:ss.SSSX} [%t] %-5level %logger{36} - %msg%n"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd'T'HH:mm:ss.SSSX} [%t] %-5level %logger{36} [%X{messageId}] - %msg%n"/>
         </Console>
     </Appenders>
     <Loggers>
@@ -10,7 +10,7 @@
         <Logger name="ie.kambur" level="debug" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
-        <Logger name="org.jboss.resteasy" level="debug" additivity="false">
+        <Logger name="org.jboss.resteasy" level="info" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
         <Root level="error">
