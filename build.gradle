@@ -24,7 +24,6 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-api:2.24.1'
     implementation 'org.apache.logging.log4j:log4j-core:2.24.1'
     implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.24.1'
-    implementation 'org.apache.logging.log4j:log4j-core:2.24.1'
 
     implementation 'io.swagger:swagger-annotations:1.6.16'
 
@@ -108,3 +107,13 @@ sourceSets.main.java.srcDir "$buildDir/generate-resources/main/src/gen/java"
 
 // Make sure code is generated before compile
 compileJava.dependsOn tasks.openApiGenerate
+
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:unchecked"
+    options.encoding = 'UTF-8' // optional, good practice
+}
+
+test {
+    failOnNoDiscoveredTests = false
+}

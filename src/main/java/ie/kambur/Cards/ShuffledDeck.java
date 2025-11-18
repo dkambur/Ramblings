@@ -165,7 +165,7 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
         out.writeObject(usedCards.toLongArray());
         out.writeObject(returnedCards.toLongArray());
     }
-
+    @SuppressWarnings("unchecked")
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         String theDeckName = in.readUTF();
