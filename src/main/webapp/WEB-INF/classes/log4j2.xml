@@ -2,7 +2,7 @@
 <Configuration status="INFO">
     <Appenders>
         <Console name="LogToConsole" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{yyyy-MM-dd'T'HH:mm:ss.SSSX} [%t] %-5level %logger{36} [%X{messageId}] - %msg%n"/>
+            <JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/>
         </Console>
     </Appenders>
     <Loggers>
