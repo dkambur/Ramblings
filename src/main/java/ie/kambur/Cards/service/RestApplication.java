@@ -17,6 +17,7 @@ public class RestApplication extends Application {
         Set<Class<?>> classes = new HashSet<>();
         classes.add(DeckApiServiceImpl.class);  // Add your controller here
         classes.add(Health.class);
+        classes.add(MessageIdMDCFilter.class);
         return classes;
     }
 }
