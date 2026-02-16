@@ -10,9 +10,15 @@ public class BaseUrl {
 
     private static final String ENV_VAR = "DECK_API_URL";
     private static final String DEFAULT_URL = "http://localhost:8080/deck-api";
+    private static final String PROD_PATH = "/deck-api";
 
     public static String get() {
-        return Optional.ofNullable(System.getenv(ENV_VAR))
+        String baseUrl = Optional.ofNullable(System.getenv(ENV_VAR))
             .orElse(DEFAULT_URL);
+        // Ensure base URL always ends with /deck-api
+        if (!baseUrl.endsWith(PROD_PATH)) {
+            baseUrl = baseUrl + PROD_PATH;
+        }
+        return baseUrl;
     }
 }

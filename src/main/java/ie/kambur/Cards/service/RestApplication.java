@@ -18,6 +18,8 @@ public class RestApplication extends Application {
         classes.add(DeckApiServiceImpl.class);  // Add your controller here
         classes.add(Health.class);
         classes.add(MessageIdMDCFilter.class);
+        classes.add(DeckEmptyExceptionMapper.class);
+        classes.add(CardAlreadyReturnedExceptionMapper.class);
         return classes;
     }
 }

@@ -1,7 +1,12 @@
 package ie.kambur.Cards.service;
 
-public class CardAlreadyReturnedException extends RuntimeException {
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
+
+public class CardAlreadyReturnedException extends WebApplicationException {
     public CardAlreadyReturnedException(String message) {
-        super(message);
+        super(Response.status(Response.Status.CONFLICT)
+                .entity("{\"error\":\"" + message + "\"}")
+                .build());
     }
 }

@@ -32,7 +32,9 @@ class RestTester {
 
     @BeforeAll
     static void setUpAll() {
-        RestAssured.baseURI = BaseUrl.get();
+        String url = BaseUrl.get();
+        logger.info("Setting baseURI to: {}", url);
+        RestAssured.baseURI = url;
     }
 
     @BeforeEach
@@ -77,6 +79,7 @@ class RestTester {
         }
 
         if (statusCode != 200) {
+            logger.error("Unexpected status: {} body: {}", statusCode, body);
             throw new RuntimeException("Unexpected status: " + statusCode + " body: " + body);
         }
 
