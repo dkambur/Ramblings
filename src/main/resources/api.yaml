@@ -1,0 +1,106 @@
+openapi: "3.0.2"
+info:
+  title: API Title
+  version: "1.0"
+servers:
+  - url: https://api.server.test/v1
+paths:
+  /test:
+    get:
+      responses:
+        '200':
+          description: OK
+  /deck:
+    post:
+      description: This will create a deck.
+
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Deck'
+
+    patch:
+      description: This will either get a card from the deck or return one.
+      operationId: getOrReturnCard
+
+      parameters:
+        - name: card
+          in: query
+          required: false
+          schema:
+            type: object
+            $ref: '#/components/schemas/StandardCard'
+
+        - name: deck
+          in: path
+          required: true
+          schema:
+            type: object
+            $ref: '#/components/schemas/Deck'
+
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/DeckAndMaybeCard'
+
+
+
+components:
+  schemas:
+    Deck:
+      type: string
+      description: encoded and encrypted deck
+      format: byte
+
+    StandardCard:
+      type: object
+
+      properties:
+        colour:
+          type: string
+          description: Colour of the card
+          enum:
+            - SPADES
+            - CLUBS
+            - DIAMONDS
+            - HEARTS
+
+        position:
+          type: string
+
+          enum:
+            - ACE
+            - TWO
+            - THREE
+            - FOUR
+            - FIVE
+            - SIX
+            - SEVEN
+            - EIGHT
+            - NINE
+            - TEN
+            - JACK
+            - QUEEN
+            - KING
+
+    DeckAndMaybeCard:
+      type: object
+
+      properties:
+        deck:
+          type: object
+          required: true
+          $ref: '#/components/schemas/Deck'
+
+        card:
+          type: object
+          required: false
+          $ref: '#/components/schemas/StandardCard'

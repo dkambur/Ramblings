@@ -6,7 +6,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.BitSet;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
+import ie.kambur.Cards.service.CardAlreadyReturnedException;
+import ie.kambur.Cards.service.DeckEmptyException;
 import java.util.Random;
 
 import ie.kambur.Cards.core.interfaces.Card;
@@ -131,7 +132,7 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 					
 				}
 				else
-					throw new NoSuchElementException ("Deck fully used");
+					throw new DeckEmptyException("Deck fully used");
 			}
 			
 		};
@@ -142,9 +143,9 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 	 * Returns a card to the deck.
 	 * 
 	 * @param card to return
-	 * @throws NoSuchElementException if card was already returned
+	 * @throws CardAlreadyReturnedException if card was already returned
 	 */
-	public void returnCard (C card) throws NoSuchElementException {
+	public void returnCard (C card) throws CardAlreadyReturnedException {
 		int ordinal = card.returnOrdinalPosition();
 		
 		// Because of inverse logic, 
@@ -153,7 +154,7 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 			cardsReturned++;
 		}
 		else
-			throw new NoSuchElementException ("Card already returned");
+			throw new CardAlreadyReturnedException ("Card already returned");
 	}
 
     @Override

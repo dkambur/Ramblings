@@ -59,3 +59,17 @@ build/libs/deck-api.war ~/opt/tomcat/webapps
 ```bash
 wget http://ramblings-app.ramblings.svc.cluster.local:8080/deck-api/health
 ```
+
+```bash
+curl -X POST https://deck-api.api.kambur.ie/deck-api/deck/create -H 'Content-Type: application/json'  -d '{
+"deckType": "standard52"
+}'
+
+curl -X PUT https://deck-api.api.kambur.ie/deck-api/deck/return  -H 'Content-Type: application/json'  -d '{
+"card":{"rank":"KING","suit":"CLUBS"},"deck":{"deckState":"rO0ABXcUAApzdGFuZGFyZDUyAAAAMwAAAAB1cgACW0p4IAS1ErF1kwIAAHhwAAAAAQAAAAACAAAAdXEAfgAAAAAAAQAP////////","deckType":"standard52"}
+}'
+
+curl -X PATCH  https://deck-api.api.kambur.ie/deck-api/deck/draw  -H 'Content-Type: application/json'  -d '{
+"deckState":"rO0ABXcUAApzdGFuZGFyZDUyAAAANAAAAAB1cgACW0p4IAS1ErF1kwIAAHhwAAAAAHVxAH4AAAAAAAEAD////////w==","deckType":"standard52"
+}'
+```

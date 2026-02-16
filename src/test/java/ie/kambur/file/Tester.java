@@ -18,7 +18,7 @@ public class Tester {
              FileOutputStream fos = new FileOutputStream(abc.getFile()) ) {
             Random rnd = new Random();
 
-            for (int i=0; i<50*1024; i++) {
+            for (int i=0; i<50*102400; i++) {
                 fos.write('a' + rnd.nextInt(10));
             }
 
