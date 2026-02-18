@@ -16,10 +16,6 @@ java.toolchain {
     languageVersion = JavaLanguageVersion.of(25)
 }
 
-java.toolchain {
-    languageVersion = JavaLanguageVersion.of(25)
-}
-
 war {
     archiveFileName = 'deck-api.war'
 }
