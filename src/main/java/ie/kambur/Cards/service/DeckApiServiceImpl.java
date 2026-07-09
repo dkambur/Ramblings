@@ -17,7 +17,7 @@ import java.io.ObjectInputStream;
 import java.util.Base64;
 import java.util.Random;
 
-import ie.kambur.Cards.service.std.SuffledDeckJsonSerialiser;
+import ie.kambur.Cards.service.std.ShuffledDeckJsonSerialiser;
 import ie.kambur.Cards.service.std.StandardCardJsonSerialiser;
 import jakarta.enterprise.context.RequestScoped;
 import org.apache.logging.log4j.LogManager;
@@ -40,7 +40,7 @@ public class DeckApiServiceImpl implements DeckApi {
         try {
             var randomisedDeck = new ShuffledDeck<> (DeckSingletonRegistry.getInstance().getDeck(deckType), new Random());
 
-            byte[] serialisedDeck = SuffledDeckJsonSerialiser.serialise(randomisedDeck);
+            byte[] serialisedDeck = ShuffledDeckJsonSerialiser.serialise(randomisedDeck);
 
             // TODO: Remove Base64 encoding and decoding into separate class.
             return new DeckState(Base64.getEncoder().encodeToString(serialisedDeck), deckType);
@@ -62,7 +62,7 @@ public class DeckApiServiceImpl implements DeckApi {
 
             DrawCard200Response theResponse = new DrawCard200Response();
 
-            theResponse.deck(new DeckState(Base64.getEncoder().encodeToString(SuffledDeckJsonSerialiser.serialise(theDeck)), deckType));
+            theResponse.deck(new DeckState(Base64.getEncoder().encodeToString(ShuffledDeckJsonSerialiser.serialise(theDeck)), deckType));
             theResponse.card(CardSerializerRegistry.getSerializer(c).serialise(c));
             return theResponse;
         } catch (IOException | ClassNotFoundException e) {
@@ -88,7 +88,7 @@ public class DeckApiServiceImpl implements DeckApi {
 
             ReturnCard200Response theResponse = new ReturnCard200Response();
 
-            theResponse.deck(new DeckState(Base64.getEncoder().encodeToString(SuffledDeckJsonSerialiser.serialise(theDeck)), deckType));
+            theResponse.deck(new DeckState(Base64.getEncoder().encodeToString(ShuffledDeckJsonSerialiser.serialise(theDeck)), deckType));
             return theResponse;
         } catch (IOException | ClassNotFoundException e) {
             throw new IllegalStateException("Card return failed", e);

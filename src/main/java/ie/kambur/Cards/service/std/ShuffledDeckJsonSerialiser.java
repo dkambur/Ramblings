@@ -6,7 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class SuffledDeckJsonSerialiser {
+public class ShuffledDeckJsonSerialiser {
     public static byte[] serialise (ShuffledDeck<?,?> shuffledDeck) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try ( ObjectOutputStream oos = new ObjectOutputStream(baos) ) {
