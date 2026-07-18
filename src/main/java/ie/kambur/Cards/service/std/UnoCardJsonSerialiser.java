@@ -12,7 +12,6 @@ public class UnoCardJsonSerialiser implements CardJsonSerialiser<UnoCard> {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode json = mapper.createObjectNode();
 
-        json.put("type", "uno");
         json.put("colour", card.getColour().toString());
         json.put("rank", card.getRank().toString());
 
