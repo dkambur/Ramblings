@@ -46,8 +46,8 @@ public class StandardCard implements Card {
 	}
 
     public StandardCard (colour col, position pos) {
-        this.thePosition = pos;
         this.theColour = col;
+        this.thePosition = pos;
     }
 
 	public String toString () {
