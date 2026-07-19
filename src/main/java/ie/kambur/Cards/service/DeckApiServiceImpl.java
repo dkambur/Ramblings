@@ -19,6 +19,7 @@ import java.util.Random;
 
 import ie.kambur.Cards.service.std.ShuffledDeckJsonSerialiser;
 import ie.kambur.Cards.service.std.StandardCardJsonSerialiser;
+import ie.kambur.Cards.core.std.UnoCardJsonSerialiser;
 import jakarta.enterprise.context.RequestScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +32,7 @@ public class DeckApiServiceImpl implements DeckApi {
     // TODO: On a stupid place - move elsewhere
     static {
         CardSerializerRegistry.register(new StandardCardJsonSerialiser());
+        CardSerializerRegistry.register(new UnoCardJsonSerialiser());
     }
 
     @Override
