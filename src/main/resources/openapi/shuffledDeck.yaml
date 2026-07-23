@@ -28,7 +28,7 @@ paths:
               properties:
                 deckType:
                   type: string
-                  enum: [standard52]
+                  enum: [standard52, uno]
                   description: Type of deck to create
                   example: standard52
             examples:
@@ -81,18 +81,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                required:
-                  - card
-                  - newDeckState
+
         '404':
           description: Deck is empty (no more cards available)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                example:
-                  error: "DECK_EMPTY"
-                  message: "No more cards available in deck"
+
 
   /deck/return:
     put:
@@ -139,9 +135,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                example:
-                  error: "CARD_ALREADY_RETURNED"
-                  message: "Card already returned"
+
 
 components:
   schemas:

@@ -71,9 +71,10 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
 	}
 
     /**
-     * Only for externalisation
+     * Only for externalisation -- uses a fixed seed so deserialized decks produce reproducible shuffle order.
      */
     public ShuffledDeck() {
+        this.rnd = new Random(42L); // deterministic default seed when no seed is available during deserialization
     }
 	
 	/**
@@ -177,7 +178,7 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
         usedCards = BitSet.valueOf((long[]) in.readObject());
         returnedCards = BitSet.valueOf((long[]) in.readObject());
 
-        // TODO: Utmost rubbish
-        rnd = new Random();
+        // Restore the Random with a deterministic seed so deserialized decks produce reproducible shuffle order.
+        rnd = new Random(42L);
     }
 }

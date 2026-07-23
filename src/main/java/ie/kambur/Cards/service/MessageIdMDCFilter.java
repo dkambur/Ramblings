@@ -15,7 +15,10 @@ public class MessageIdMDCFilter implements ContainerRequestFilter, ContainerResp
 
     @Override
     public void filter(ContainerRequestContext ctx) {
-        MDC.put("messageId", ctx.getHeaderString("Message-Id"));
+        String messageId = ctx.getHeaderString("Message-Id");
+        if (messageId != null) {
+            MDC.put("messageId", messageId);
+        }
         logger.info ("Received request {} {}", ctx.getMethod(), ctx.getUriInfo().getPath());
     }
 
