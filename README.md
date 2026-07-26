@@ -14,6 +14,12 @@ curl -X POST http://localhost:8080/deck-api/deck/create -H 'Content-Type: applic
 }'
 ```
 
+```bash
+curl -X POST http://localhost:8080/deck-api/deck/create -H 'Content-Type: application/json'  -d '{
+"deckType": "uno"       
+}'
+```
+
 ## Draw a card
 
 ```bash
@@ -22,6 +28,12 @@ curl -X PATCH http://localhost:8080/deck-api/deck/draw  -H 'Content-Type: applic
 }'
 ```
 
+
+```bash
+curl -X PATCH http://localhost:8080/deck-api/deck/draw  -H 'Content-Type: application/json'  -d '{
+"deckState":"rO0ABXcNAAN1bm8AAABsAAAAAHVyAAJbSnggBLUSsXWTAgAAeHAAAAAAdXEAfgAAAAAAAv//////////AAAP//////8=","deckType":"uno"
+}'
+```
 ## Return a card
 ```bash
 curl -X PUT http://localhost:8080/deck-api/deck/return  -H 'Content-Type: application/json'  -d '{

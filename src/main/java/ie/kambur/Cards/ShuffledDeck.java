@@ -178,7 +178,7 @@ public class ShuffledDeck<C extends Card, T extends OrderedDeck<C> > implements 
         usedCards = BitSet.valueOf((long[]) in.readObject());
         returnedCards = BitSet.valueOf((long[]) in.readObject());
 
-        // Restore the Random with a deterministic seed so deserialized decks produce reproducible shuffle order.
-        rnd = new Random(42L);
+        // Fresh random seed on deserialization so each request produces a new shuffle order.
+        rnd = new Random();
     }
 }
