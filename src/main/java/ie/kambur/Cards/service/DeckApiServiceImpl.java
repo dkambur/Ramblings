@@ -19,8 +19,6 @@ import java.util.Random;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import ie.kambur.Cards.service.std.ShuffledDeckJsonSerialiser;
-import ie.kambur.Cards.service.std.StandardCardJsonSerialiser;
-import ie.kambur.Cards.service.std.UnoCardJsonSerialiser;
 import ie.kambur.Cards.core.std.UnoCard;
 import ie.kambur.Cards.core.std.StandardCard;
 import jakarta.enterprise.context.RequestScoped;
@@ -31,12 +29,6 @@ import org.apache.logging.log4j.Logger;
 public class DeckApiServiceImpl implements DeckApi {
 
     protected static final Logger logger = LogManager.getLogger(DeckApiServiceImpl.class);
-
-    // TODO: On a stupid place - move elsewhere
-    static {
-        CardSerializerRegistry.register(new StandardCardJsonSerialiser());
-        CardSerializerRegistry.register(new UnoCardJsonSerialiser());
-    }
 
     @Override
     public DeckState createDeck(CreateDeckRequest createDeckRequest) {
