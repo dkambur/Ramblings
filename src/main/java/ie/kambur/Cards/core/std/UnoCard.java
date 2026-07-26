@@ -62,7 +62,7 @@ public class UnoCard implements Card {
 
     /** Return ordinal position in the UnoDeck, or -1 if not yet assigned. */
     public int getOrdinal() { return ordinal; }
-    void setOrdinal(int ordinal) { this.ordinal = ordinal; }
+    public void setOrdinal(int ordinal) { this.ordinal = ordinal; }
 
     @Override
     public String toString() {
