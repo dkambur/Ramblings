@@ -1,5 +1,6 @@
 package ie.kambur.Cards.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
@@ -13,8 +14,15 @@ public class DeckEmptyExceptionMapper implements ExceptionMapper<DeckEmptyExcept
     @Override
     public Response toResponse(DeckEmptyException exception) {
         logger.warn("Deck exhausted: {}", exception.getMessage());
-        return Response.status(Response.Status.CONFLICT)
-                .entity("{\"error\":\"" + exception.getMessage() + "\"}")
-                .build();
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String body = mapper.writeValueAsString(java.util.Map.of("error", exception.getMessage()));
+            return Response.status(Response.Status.CONFLICT).entity(body).build();
+        } catch (Exception e) {
+            logger.error("Failed to serialise error response", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\":\"Internal server error\"}")
+                    .build();
+        }
     }
 }

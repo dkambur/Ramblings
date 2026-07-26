@@ -17,8 +17,12 @@ import java.io.ObjectInputStream;
 import java.util.Base64;
 import java.util.Random;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import ie.kambur.Cards.service.std.ShuffledDeckJsonSerialiser;
 import ie.kambur.Cards.service.std.StandardCardJsonSerialiser;
+import ie.kambur.Cards.service.std.UnoCardJsonSerialiser;
+import ie.kambur.Cards.core.std.UnoCard;
+import ie.kambur.Cards.core.std.StandardCard;
 import jakarta.enterprise.context.RequestScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +35,7 @@ public class DeckApiServiceImpl implements DeckApi {
     // TODO: On a stupid place - move elsewhere
     static {
         CardSerializerRegistry.register(new StandardCardJsonSerialiser());
+        CardSerializerRegistry.register(new UnoCardJsonSerialiser());
     }
 
     @Override
@@ -71,7 +76,6 @@ public class DeckApiServiceImpl implements DeckApi {
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public ReturnCard200Response returnCard(ReturnCardRequest returnCardRequest) {
 
         try {
@@ -81,9 +85,16 @@ public class DeckApiServiceImpl implements DeckApi {
             ShuffledDeck<? extends Card, ?> theDeck = new ShuffledDeck<>();
             theDeck.readExternal(new ObjectInputStream(new ByteArrayInputStream(decodedState)));
 
-            // FIXME: Hack below - need to rethink how to organise generic code
-            Card returnedCard = (CardSerializerRegistry.getSerializer(theDeck.getTheDeck().getCardFromOrdinal(0)).deserialise(returnCardRequest.getCard()));
-            // TODO: Below is to fix type generics issues
+            // Detect card type from JSON structure: StandardCard uses "suit", UnoCard uses "colour"
+            JsonNode cardJson = returnCardRequest.getCard();
+            Card returnedCard;
+            if (cardJson.has("suit")) {
+                returnedCard = CardSerializerRegistry.getSerializer(StandardCard.class).deserialise(cardJson);
+            } else {
+                returnedCard = CardSerializerRegistry.getSerializer(UnoCard.class).deserialise(cardJson);
+            }
+
+            // Cast to raw ShuffledDeck to satisfy the returnCard method signature
             ((ShuffledDeck) theDeck).returnCard(returnedCard);
 
             ReturnCard200Response theResponse = new ReturnCard200Response();
