@@ -514,13 +514,13 @@
         #     This is for allowing the default `host` and `port` of `.discovery.registry.kubernetes.service`.
 
     dns:
-      resolvers:
-        - 127.0.0.1
-        - 172.20.0.10
-        - 114.114.114.114
-        - 223.5.5.5
-        - 1.1.1.1
-        - 8.8.8.8
+      resolvers: []
+#        - 127.0.0.1
+#        - 172.20.0.10
+#        - 114.114.114.114
+#        - 223.5.5.5
+#        - 1.1.1.1
+#        - 8.8.8.8
       validity: 30
       timeout: 5
 
@@ -640,6 +640,8 @@
         create: false
         # -- root password for etcd. Requires etcd.auth.rbac.create to be true.
         rootPassword: ""
+      token:
+        enabled: false
       tls:
         # -- enable etcd client certificate
         enabled: false
@@ -663,6 +665,10 @@
       port: 2379
 
     replicaCount: 3
+    env:
+      - name: ETCD_INITIAL_CLUSTER_STATE
+        value: "new"
+
     autoCompactionRetention: "1h"
     autoCompactionMode: "periodic"
 
