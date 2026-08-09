@@ -13,27 +13,22 @@ public class UnoCardJsonSerialiser implements CardJsonSerialiser<UnoCard> {
         ObjectNode json = mapper.createObjectNode();
 
         json.put("colour", card.getColour().toString());
-        json.put("rank", card.getRank().toString());
+        if (card.getRank() != null) {
+            json.put("rank", card.getRank().toString());
+        }
 
         return json;
     }
 
     @Override
     public UnoCard deserialise(JsonNode json) {
-        String colourName = json.get("colour").asText();
-
+        UnoCard.Colour colour = UnoCard.Colour.valueOf(json.get("colour").asText());
         if (json.has("rank")) {
-            // Standard card: colour + rank
-            UnoCard.Colour c = UnoCard.Colour.valueOf(colourName);
-            UnoCard.Rank r = UnoCard.Rank.valueOf(json.get("rank").asText());
-            return new UnoCard(c, r);
-        } else {
-            // Wild card: colour IS the type (WILD / WILD_DRAW_FOUR)
-            UnoCard.Colour.Wild wild = UnoCard.Colour.Wild.valueOf(colourName);
-            UnoCard card = new UnoCard(wild);
-            if (json.has("ordinal")) card.setOrdinal(json.get("ordinal").asInt());
-            return card;
+            UnoCard.Rank rank = UnoCard.Rank.valueOf(json.get("rank").asText());
+            return new UnoCard(colour, rank);
         }
+        // Wild card: colour=WILD, rank=null
+        return new UnoCard();
     }
 
     @Override

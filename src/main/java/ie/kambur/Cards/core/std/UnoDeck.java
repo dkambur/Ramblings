@@ -5,7 +5,7 @@ import ie.kambur.Cards.core.interfaces.OrderedDeck;
 /**
  * Standard 108-card Uno deck.
  * Coloured cards (RED/BLUE/GREEN/YELLOW): 4 × 25 ordinals = 100 (ZERO + ONE..NINE×2 + SKIP×2 + REVERSE×2 + DRAW_TWO×2)
- * BLACK wilds: 8 cards at ordinals 100-107 (WILD and WILD_DRAW_FOUR as Colour.Wild values)
+ * Wilds: 8 cards at ordinals 100-107 (colour=WILD, rank=null)
  */
 public class UnoDeck implements OrderedDeck<UnoCard> {
 
@@ -23,10 +23,9 @@ public class UnoDeck implements OrderedDeck<UnoCard> {
             throw new IllegalArgumentException("Invalid Uno ordinal: " + ordinal);
         }
 
-        // BLACK wilds occupy ordinals 100-107: WILD at even offsets, WILD_DRAW_FOUR at odd
+        // Wilds occupy ordinals 100-107: colour=WILD, rank=null
         if (ordinal >= COLOURED_TOTAL) {
-            int offset = ordinal - COLOURED_TOTAL;
-            UnoCard card = new UnoCard(UnoCard.Colour.Wild.values()[offset % 2]);
+            UnoCard card = new UnoCard();
             card.setOrdinal(ordinal);
             return card;
         }
@@ -59,7 +58,7 @@ public class UnoDeck implements OrderedDeck<UnoCard> {
 
     @Override
     public int getOrdinalFromCard(UnoCard card) {
-        if (card.isBlackSuit()) {
+        if (card.getColour() == UnoCard.Colour.WILD) {
             return card.getOrdinal();
         }
         int colourCode = card.getColour().ordinal();

@@ -10,55 +10,29 @@ import java.util.Objects;
  */
 public class UnoCard implements Card {
 
-    /** Standard colours for rank-bearing cards. BLACK wilds also live here as a nested enum value. */
-    public enum Colour {
-        RED, BLUE, GREEN, YELLOW;
-
-        /** Black wild card types — they ARE the colour for wild cards, no separate flag needed. */
-        public static enum Wild { WILD, WILD_DRAW_FOUR }
-    }
+    public enum Colour { RED, BLUE, GREEN, YELLOW, WILD }
 
     public enum Rank { ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, SKIP, REVERSE, DRAW_TWO; }
 
-    /** For coloured cards: a Colour (RED/BLUE/GREEN/YELLOW). For wilds: an instance of WildColour. */
-    private final Object colour;
-    /** Present only for coloured cards. Null for wilds. */
+    private final Colour colour;
+    /** Null for wild cards (WILD). */
     private final Rank rank;
     /** Ordinal position in the UnoDeck. Set by UnoDeck.getCardFromOrdinal(); -1 until then. */
     private int ordinal = -1;
 
-    // coloured card (RED, BLUE, GREEN, YELLOW)
     public UnoCard(Colour colour, Rank rank) {
         this.colour = colour;
         this.rank = rank;
     }
 
-    // wild card — a WildColour value is also assignable to Colour via casting
-    public UnoCard(Colour.Wild wildType) {
-        this.colour = wildType;
-        this.rank = null;
+    /** Wild card constructor — colour is WILD, rank is null. */
+    public UnoCard() {
+        this(Colour.WILD, null);
     }
 
-    protected UnoCard() { this.colour = null; this.rank = null; }
-
-    /** Get the base colour (RED/BLUE/GREEN/YELLOW). Only valid for coloured cards. */
-    public Colour getColour() {
-        if (colour instanceof Colour.Wild) throw new IllegalStateException("Cannot get colour of a wild card");
-        return (Colour) colour;
-    }
-
-    /** Get the specific wild type (WILD or WILD_DRAW_FOUR). Only valid for wild cards. */
-    public Colour.Wild getWildType() {
-        if (!isBlackSuit()) throw new IllegalStateException("Not a wild card");
-        return (Colour.Wild) colour;
-    }
+    public Colour getColour() { return colour; }
 
     public Rank getRank() { return rank; }
-
-    /** Return true if this is a black wild card. */
-    public boolean isBlackSuit() {
-        return colour instanceof Colour.Wild;
-    }
 
     /** Return ordinal position in the UnoDeck, or -1 if not yet assigned. */
     public int getOrdinal() { return ordinal; }
@@ -66,10 +40,10 @@ public class UnoCard implements Card {
 
     @Override
     public String toString() {
-        if (isBlackSuit()) {
-            return "BLACK " + ((Colour.Wild) colour).name();
+        if (colour == Colour.WILD) {
+            return "WILD";
         }
-        return ((Colour) colour).name() + " " + rank.name();
+        return colour.name() + " " + rank.name();
     }
 
     @Override
@@ -77,15 +51,12 @@ public class UnoCard implements Card {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UnoCard unoCard = (UnoCard) o;
-        if (isBlackSuit() != unoCard.isBlackSuit()) return false;
-        if (isBlackSuit()) return colour == unoCard.colour; // Wild enum identity
-        return ((Colour) colour) == ((Colour) unoCard.colour) && rank == unoCard.rank;
+        return colour == unoCard.colour && rank == unoCard.rank;
     }
 
     @Override
     public int hashCode() {
-        if (isBlackSuit()) return Objects.hash(colour);
-        return Objects.hash(((Colour) colour), rank);
+        return Objects.hash(colour, rank);
     }
 
     @Override
