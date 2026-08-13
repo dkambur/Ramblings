@@ -16,6 +16,8 @@ public class UnoCardJsonSerialiser implements CardJsonSerialiser<UnoCard> {
         if (card.getRank() != null) {
             json.put("rank", card.getRank().toString());
         }
+        // Ordinal is required to distinguish identical card instances (e.g., two RED ZEROes)
+        json.put("ordinal", card.returnOrdinalPosition());
 
         return json;
     }
@@ -23,12 +25,11 @@ public class UnoCardJsonSerialiser implements CardJsonSerialiser<UnoCard> {
     @Override
     public UnoCard deserialise(JsonNode json) {
         UnoCard.Colour colour = UnoCard.Colour.valueOf(json.get("colour").asText());
-        if (json.has("rank")) {
-            UnoCard.Rank rank = UnoCard.Rank.valueOf(json.get("rank").asText());
-            return new UnoCard(colour, rank);
-        }
-        // Wild card: colour=WILD, rank=null
-        return new UnoCard();
+        UnoCard.Rank rank = json.has("rank") ? UnoCard.Rank.valueOf(json.get("rank").asText()) : null;
+        int ordinal = json.has("ordinal") ? json.get("ordinal").asInt() : -1;
+
+        // Single constructor — all fields passed at construction time
+        return new UnoCard(colour, rank, ordinal);
     }
 
     @Override
