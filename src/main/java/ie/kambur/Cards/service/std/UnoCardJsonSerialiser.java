@@ -7,33 +7,36 @@ import ie.kambur.Cards.core.std.UnoCard;
 import ie.kambur.Cards.service.interfaces.CardJsonSerialiser;
 
 public class UnoCardJsonSerialiser implements CardJsonSerialiser<UnoCard> {
-    @Override
+
+          @Override
     public JsonNode serialise(UnoCard card) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode json = mapper.createObjectNode();
 
-        json.put("colour", card.getColour().toString());
+        json.put("colour", card.getColour().name());
         if (card.getRank() != null) {
-            json.put("rank", card.getRank().toString());
-        }
-        // Ordinal is required to distinguish identical card instances (e.g., two RED ZEROes)
+            json.put("rank", card.getRank().name());
+           }
+            // Ordinal disambiguates identical instances (e.g. two RED ZEROes)
         json.put("ordinal", card.returnOrdinalPosition());
 
         return json;
-    }
+        }
 
-    @Override
+          @Override
     public UnoCard deserialise(JsonNode json) {
         UnoCard.Colour colour = UnoCard.Colour.valueOf(json.get("colour").asText());
-        UnoCard.Rank rank = json.has("rank") ? UnoCard.Rank.valueOf(json.get("rank").asText()) : null;
-        int ordinal = json.has("ordinal") ? json.get("ordinal").asInt() : -1;
+        UnoCard.Rank rank = json.has("rank")
+               ? UnoCard.Rank.valueOf(json.get("rank").asText())
+               : null;
+        int ordinal = json.get("ordinal").asInt();
 
-        // Single constructor — all fields passed at construction time
+          // Constructor validates that wilds have null rank, coloured cards have non-null rank.
         return new UnoCard(colour, rank, ordinal);
-    }
+        }
 
-    @Override
+          @Override
     public Class<UnoCard> getCardType() {
         return UnoCard.class;
-    }
+        }
 }

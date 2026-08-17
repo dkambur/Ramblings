@@ -1,77 +1,110 @@
 package ie.kambur.Cards.core.std;
 
 import ie.kambur.Cards.core.interfaces.Card;
-import java.util.Objects;
 
 /**
- * Represents an Uno playing card.
- * Coloured cards (RED, BLUE, GREEN, YELLOW): 4 × 25 = 100 cards
- * WILD / WILD_DRAW_FOUR: nested under Colour.BLACK — the colour field IS both suit and type
+ * Represents an Uno playing card (108-card deck).
+ *
+ * <ul>
+ *   <li>Coloured cards (RED, BLUE, GREEN, YELLOW): 4 × 25 = 100 cards.
+ *       Each colour has: 1 ZERO + 9×2 (ONE..NINE) + 2×(SKIP, REVERSE, DRAW_TWO) = 25 cards.</li>
+ *   <li>Wild cards: 4 WILD (ordinals 100-103) + 4 WILD_DRAW_FOUR (ordinals 104-107) = 8 cards.</li>
+ * </ul>
+ *
+ * <p>Each card has a unique ordinal (0-107) identifying its position in the deck.
+ * Cards with the same colour+rank (e.g. two RED EIGHTs) are distinguished by ordinal.
  */
 public class UnoCard implements Card {
 
-    public enum Colour { RED, BLUE, GREEN, YELLOW, WILD }
+    /**
+     * All card descriptors. The first four are actual colours; the last two describe
+     * wild cards. They share one enum because they answer the same question:
+     * "what kind of card is this?"
+     */
+    public enum Colour { RED, BLUE, GREEN, YELLOW, WILD, WILD_DRAW_FOUR }
 
-    public enum Rank { ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, SKIP, REVERSE, DRAW_TWO; }
+    public enum Rank {
+        ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE,
+        SKIP, REVERSE, DRAW_TWO
+    }
 
     private final Colour colour;
-    /** Null for wild cards (WILD). */
+    /** Null for wild cards (WILD / WILD_DRAW_FOUR). */
     private final Rank rank;
     private final int ordinal;
 
+    /**
+     * Validates invariants:
+     * <ul>
+     *   <li>WILD / WILD_DRAW_FOUR colours require null rank.</li>
+     *   <li>Other colours require non-null rank.</li>
+     *   <li>Ordinal must be in range 0-107.</li>
+     * </ul>
+     */
     public UnoCard(Colour colour, Rank rank, int ordinal) {
+        if (ordinal < 0 || ordinal > 107) {
+            throw new IllegalArgumentException("Ordinal out of range: " + ordinal);
+        }
+        boolean isWildColour = colour == Colour.WILD || colour == Colour.WILD_DRAW_FOUR;
+        if (isWildColour && rank != null) {
+            throw new IllegalArgumentException(colour + " must have null rank");
+        }
+        if (!isWildColour && rank == null) {
+            throw new IllegalArgumentException(colour + " must have a non-null rank");
+        }
         this.colour = colour;
         this.rank = rank;
         this.ordinal = ordinal;
     }
 
     public Colour getColour() { return colour; }
-
     public Rank getRank() { return rank; }
 
-    /** Return ordinal position in the UnoDeck (0..107). */
+    /** @return true if this card is WILD or WILD_DRAW_FOUR. */
+    public boolean isWild() { return colour == Colour.WILD || colour == Colour.WILD_DRAW_FOUR; }
+
+    /** @return true if this card is specifically WILD_DRAW_FOUR. */
+    public boolean isDrawFour() { return colour == Colour.WILD_DRAW_FOUR; }
+
+    /** @return ordinal position in the UnoDeck (0-107). */
     public int getOrdinal() { return ordinal; }
 
     @Override
     public String toString() {
-        if (colour == Colour.WILD) {
-            return "WILD";
-        }
-        return colour.name() + " " + rank.name();
+        return colour.name() + (rank != null ? " " + rank.name() : "");
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UnoCard unoCard = (UnoCard) o;
-        return colour == unoCard.colour && rank == unoCard.rank;
+        UnoCard that = (UnoCard) o;
+        // Ordinal uniquely identifies each card in the deck
+        return ordinal == that.ordinal;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(colour, rank);
+        return Integer.hashCode(ordinal);
     }
 
-    /** Position within a colour block (0..24). ZERO=0, ONE=1, TWO=3, ..., NINE=17, SKIP=19, REVERSE=21, DRAW_TWO=23. */
-    int positionInColour() {
-        if (rank == null) return -1; // WILD cards have no fixed position in colour block
-        int rankIndex = rank.ordinal();
-        if (rankIndex == 0) return 0;                          // ZERO
-        if (rankIndex >= 1 && rankIndex <= 9) return (rankIndex - 1) * 2 + 1; // ONE→1, TWO→3, ..., NINE→17
-        if (rankIndex == 10) return 19;                         // SKIP
-        if (rankIndex == 11) return 21;                         // REVERSE
-        return 23;                                              // DRAW_TWO
-    }
-
-    /** Decode ordinal into a card. Ordinals 0-99 are coloured (ZERO..NINE×2, SKIP×2, REVERSE×2, DRAW_TWO×2); 100-107 are WILD. */
+    /**
+     * Decode an ordinal into a card.
+     * <ul>
+     *   <li>0-99: coloured cards (ZERO..NINE×2, SKIP×2, REVERSE×2, DRAW_TWO×2)</li>
+     *   <li>100-103: WILD</li>
+     *   <li>104-107: WILD_DRAW_FOUR</li>
+     * </ul>
+     */
     static UnoCard fromOrdinal(int ordinal) {
         if (ordinal < 0 || ordinal >= 108) {
             throw new IllegalArgumentException("Invalid Uno ordinal: " + ordinal);
         }
-        // Wilds occupy ordinals 100-107: colour=WILD, rank=null
+
+        // Wilds occupy ordinals 100-107
         if (ordinal >= 100) {
-            return new UnoCard(Colour.WILD, null, ordinal);
+            Colour wildColour = (ordinal >= 104) ? Colour.WILD_DRAW_FOUR : Colour.WILD;
+            return new UnoCard(wildColour, null, ordinal);
         }
 
         Colour colour = Colour.values()[ordinal / 25];
@@ -81,26 +114,15 @@ public class UnoCard implements Card {
         if (pos == 0) {
             rank = Rank.ZERO;
         } else if (pos <= 18) {
-            // Positions 1-18: pairs for ONE(1,2), TWO(3,4), ..., NINE(17,18)
-            rank = Rank.values()[(pos - 1) / 2 + 1];
+            rank = Rank.values()[(pos - 1) / 2 + 1]; // ONE(1,2), TWO(3,4), ..., NINE(17,18)
         } else if (pos <= 20) {
-            // SKIP at positions 19, 20
             rank = Rank.SKIP;
         } else if (pos <= 22) {
-            // REVERSE at positions 21, 22
             rank = Rank.REVERSE;
         } else {
-            // DRAW_TWO at position 23, 24
             rank = Rank.DRAW_TWO;
         }
-
         return new UnoCard(colour, rank, ordinal);
-    }
-
-    /** Compute ordinal from colour and rank. WILD cards have no fixed ordinal. */
-    static int computeOrdinal(Colour colour, Rank rank) {
-        if (colour == Colour.WILD || rank == null) return -1;
-        return colour.ordinal() * 25 + new UnoCard(colour, rank, 0).positionInColour();
     }
 
     @Override

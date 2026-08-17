@@ -4,8 +4,12 @@ import ie.kambur.Cards.core.interfaces.OrderedDeck;
 
 /**
  * Standard 108-card Uno deck.
- * Coloured cards (RED/BLUE/GREEN/YELLOW): 4 × 25 ordinals = 100 (ZERO + ONE..NINE×2 + SKIP×2 + REVERSE×2 + DRAW_TWO×2)
- * Wilds: 8 cards at ordinals 100-107 (colour=WILD, rank=null)
+ * <ul>
+ *    <li>Coloured cards (RED/BLUE/GREEN/YELLOW): 4 × 25 = 100 cards<br>
+ *      (ZERO + ONE..NINE×2 + SKIP×2 + REVERSE×2 + DRAW_TWO×2 per colour)</li>
+ *    <li>Wilds: 8 cards at ordinals 100-107<br>
+ *      (ordinals 100-103: WILD, 104-107: WILD_DRAW_FOUR)</li>
+ * </ul>
  */
 public class UnoDeck implements OrderedDeck<UnoCard> {
 
