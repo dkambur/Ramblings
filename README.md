@@ -105,3 +105,17 @@ curl -X PATCH  https://deck-api.api.kambur.ie/deck-api/deck/draw  -H 'Content-Ty
 }'
 ```
 
+## API Documentation
+
+Interactive API documentation is available at:
+
+```
+https://deck-api.api.kambur.ie/api-docs/swagger-ui.html
+```
+
+The OpenAPI spec is served at:
+
+```
+https://deck-api.api.kambur.ie/api-docs/shuffledDeck.yaml
+```
+

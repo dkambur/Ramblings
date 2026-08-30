@@ -104,7 +104,13 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          export IMAGE_TAG IMAGE_NAME
+          export IMAGE_TAG IMAGE_NAME          # Generate ConfigMap from source YAML
+          kubectl create configmap api-docs \
+            --from-file=shuffledDeck.yaml=src/main/resources/openapi/shuffledDeck.yaml \
+            --from-file=swagger-ui.html=src/main/resources/swagger/swagger-ui.html \
+            -n ramblings \
+            --dry-run=client -o yaml | kubectl apply -f -
+          # Apply deployment with envsubst
           envsubst < kubernetes/k8s-deployment.yaml | kubectl apply -f -
 
       - name: Wait for deployment rollout
