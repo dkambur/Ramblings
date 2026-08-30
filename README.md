@@ -34,10 +34,20 @@ curl -X PATCH http://localhost:8080/deck-api/deck/draw  -H 'Content-Type: applic
 "deckState":"rO0ABXcNAAN1bm8AAABsAAAAAHVyAAJbSnggBLUSsXWTAgAAeHAAAAAAdXEAfgAAAAAAAv//////////AAAP//////8=","deckType":"uno"
 }'
 ```
+
 ## Return a card
+
+### StandardCard format
 ```bash
 curl -X PUT http://localhost:8080/deck-api/deck/return  -H 'Content-Type: application/json'  -d '{
 "card":{"rank":"KING","suit":"CLUBS"},"deck":{"deckState":"rO0ABXcUAApzdGFuZGFyZDUyAAAAMwAAAAB1cgACW0p4IAS1ErF1kwIAAHhwAAAAAQAAAAACAAAAdXEAfgAAAAAAAQAP////////","deckType":"standard52"}
+}'
+```
+
+### UnoCard format
+```bash
+curl -X PUT http://localhost:8080/deck-api/deck/return  -H 'Content-Type: application/json'  -d '{
+"card":{"colour":"RED","rank":"KING","ordinal":0},"deck":{"deckState":"<base64>","deckType":"uno"}
 }'
 ```
 
@@ -51,11 +61,12 @@ curl http://localhost:8080/deck-api/health
 ## Core
 Implement `Card` and `OrderedDeck`.
 
-Modify `resources/META-INF/services/ie.kambur.Cards.core.interfaces.OrderedDeck` to include the name of the class
-
+Modify `src/main/resources/META-INF/services/ie.kambur.Cards.core.interfaces.OrderedDeck` to include the class name.
 
 ## Rest/Json
-Serialisation of ShuffledDeck should suffice but one must implement `CardJsonSerialiser` like `StandardCardJsonSerialiser`
+Serialisation of ShuffledDeck should suffice but one must implement `CardJsonSerialiser` like `StandardCardJsonSerialiser`.
+
+Register the serialiser in `src/main/resources/META-INF/services/ie.kambur.Cards.service.interfaces.CardJsonSerialiser`.
 
 # Useful stuff
 
@@ -64,6 +75,14 @@ Serialisation of ShuffledDeck should suffice but one must implement `CardJsonSer
 ```bash
 bin/catalina.sh start
 build/libs/deck-api.war ~/opt/tomcat/webapps 
+```
+
+## Deploymnet with container
+See `docker/Dockerfile`. 
+
+As simple as
+```commandline
+COPY build/libs/deck-api.war /usr/local/tomcat/webapps/
 ```
 
 ## K8s service peekaboo
@@ -85,3 +104,4 @@ curl -X PATCH  https://deck-api.api.kambur.ie/deck-api/deck/draw  -H 'Content-Ty
 "deckState":"rO0ABXcUAApzdGFuZGFyZDUyAAAANAAAAAB1cgACW0p4IAS1ErF1kwIAAHhwAAAAAHVxAH4AAAAAAAEAD////////w==","deckType":"standard52"
 }'
 ```
+
