@@ -107,7 +107,7 @@ jobs:
           export IMAGE_TAG IMAGE_NAME
           # Generate ConfigMap from source files
           kubectl create configmap api-docs \
-            --from-file=api-docs=src/main/resources/swagger/api-docs \
+            --from-file=src/main/resources/swagger/api-docs \
             --from-file=health=src/main/resources/swagger/health \
             -n ramblings \
             --dry-run=client -o yaml | kubectl apply -f -
