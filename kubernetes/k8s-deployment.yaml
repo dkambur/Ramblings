@@ -41,7 +41,7 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
         - name: api-docs-sidecar
-          image: nginx:debian
+          image: nginx:latest
           ports:
             - containerPort: 80
               name: http
