@@ -107,7 +107,8 @@ jobs:
           export IMAGE_TAG IMAGE_NAME
           # Generate ConfigMap from source files
           kubectl create configmap api-docs \
-            --from-file=src/main/resources/swagger/api-docs \
+            --from-file=api-docs/shuffledDeck.yaml=src/main/resources/swagger/api-docs/shuffledDeck.yaml \
+            --from-file=api-docs/swagger-ui.html=src/main/resources/swagger/api-docs/swagger-ui.html \
             --from-file=health=src/main/resources/swagger/health \
             -n ramblings \
             --dry-run=client -o yaml | kubectl apply -f -
