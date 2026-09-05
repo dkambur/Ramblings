@@ -83,9 +83,11 @@ spec:
   selector:
     app: ramblings-app
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 8080
       targetPort: 8080
-    - protocol: TCP
+    - name: api-docs
+      protocol: TCP
       port: 80
       targetPort: 80
