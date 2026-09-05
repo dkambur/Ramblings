@@ -78,7 +78,7 @@ dependencies {
 //}
 
 openApiGenerate {
-    inputSpec = "$rootDir/src/main/resources/openapi/shuffledDeck.yaml".toString()
+    inputSpec = "$rootDir/src/main/resources/swagger/api-docs/shuffledDeck.yaml".toString()
 //    generatorName = "jaxrs-resteasy"
     generatorName = "jaxrs-spec"
 
