@@ -147,7 +147,7 @@ paths:
                     deckType: uno
                     deckState: "rO0ABXcNAAN1bm8AAABrAAAAAHVyAAJbSnggBLUSsXWTAgAAeHAAAAABAAAAAAAAQAB1cQB+AAAAAAAC//////////8AAA///////w=="
                   card:
-                    cplour: RED
+                    colour: RED
                     rank: SEVEN
                     ordinal: 14
       responses:
