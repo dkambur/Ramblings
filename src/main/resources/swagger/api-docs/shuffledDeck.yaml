@@ -9,7 +9,7 @@ info:
     name: Cards API
     email: dalen.kambur@gmail.com
 servers:
-  - url: https://deck-api.example.com/api.kambur.ie/deck-api
+  - url: https://deck-api.api.kambur.ie/deck-api
     description: Test
 paths:
   /deck/create:
