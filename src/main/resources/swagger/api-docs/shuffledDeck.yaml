@@ -120,6 +120,16 @@ paths:
                   $ref: '#/components/schemas/DeckState'
                 card:
                   $ref: '#/components/schemas/CardSchema'
+            examples:
+              return_standard_52:
+                summary: Return a card to standard 52 card deck.
+                value:
+                  deck:
+                    deckType: standard52
+                    deckState: "rO0ABXcUAApzdGFuZGFyZDUyAAAAMwAAAAB1cgACW0p4IAS1ErF1kwIAAHhwAAAAAQAAAAACAAAAdXEAfgAAAAAAAQAP////////"
+                  card:
+                    rank: KING
+                    suit: CLUBS
       responses:
         '200':
           description: Card returned successfully
