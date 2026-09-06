@@ -38,6 +38,10 @@ paths:
                 summary: Standard 52-card deck
                 value:
                   deckType: standard52
+              uno_deck:
+                summary: Uno deck
+                value:
+                  deckType: uno
       responses:
         '200':
           description: Deck created successfully
@@ -71,6 +75,12 @@ paths:
                 value:
                   deckType: standard52
                   deckState: "rO0ABXcUAApzdGFuZGFyZDUyAAAAMwAAAAB1cgACW0p4IAS1ErF1kwIAAHhwAAAAAQAAAAACAAAAdXEAfgAAAAAAAQAP////////"
+              pull_uno:
+                summary: Pull an uno card.
+                value:
+                  deckType: uno
+                  deckState: "rO0ABXcNAAN1bm8AAABsAAAAAHVyAAJbSnggBLUSsXWTAgAAeHAAAAAAdXEAfgAAAAAAAv//////////AAAP//////8="
+
 
       responses:
         '200':
@@ -130,6 +140,16 @@ paths:
                   card:
                     rank: KING
                     suit: CLUBS
+              return_uno:
+                summary: Return an uno card.
+                value:
+                  deck:
+                    deckType: uno
+                    deckState: "rO0ABXcNAAN1bm8AAABrAAAAAHVyAAJbSnggBLUSsXWTAgAAeHAAAAABAAAAAAAAQAB1cQB+AAAAAAAC//////////8AAA///////w=="
+                  card:
+                    cplour: RED
+                    rank: SEVEN
+                    ordinal: 14
       responses:
         '200':
           description: Card returned successfully
