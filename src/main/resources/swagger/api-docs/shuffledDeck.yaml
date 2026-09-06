@@ -65,6 +65,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DeckState'
+            examples:
+              pull_standard_52:
+                summary: Pull a card from standard 52 card deck.
+                value:
+                  deckType: standard52
+                  deckState: "rO0ABXcUAApzdGFuZGFyZDUyAAAAMwAAAAB1cgACW0p4IAS1ErF1kwIAAHhwAAAAAQAAAAACAAAAdXEAfgAAAAAAAQAP////////"
+
       responses:
         '200':
           description: Card drawn successfully
