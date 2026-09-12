@@ -26,7 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @RequestScoped
-public class DeckApiServiceImpl implements DeckApi {
+public class DeckApiServiceImpl implements DeckApiApi {
 
     protected static final Logger logger = LogManager.getLogger(DeckApiServiceImpl.class);
 
