@@ -10,7 +10,7 @@
         <Logger name="ie.kambur" level="debug" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
-        <Logger name="org.jboss.resteasy" level="info" additivity="false">
+        <Logger name="org.jboss.resteasy" level="debug" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
         <Root level="error">
