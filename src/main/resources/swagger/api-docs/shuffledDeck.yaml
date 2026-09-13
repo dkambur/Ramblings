@@ -123,7 +123,7 @@ paths:
             schema:
               type: object
               required:
-                - deckState
+                - deck
                 - card
               properties:
                 deck:
@@ -220,7 +220,7 @@ components:
       properties:
         any:
           x-jackson-type: com.fasterxml.jackson.databind.JsonNode
-      additionalProperties: false
+      additionalProperties: true
       description: |
           Placeholder for non-standard cards (e.g. Uno, Tarot, custom decks).
           Structure not specified yet.
