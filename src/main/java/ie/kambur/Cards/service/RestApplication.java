@@ -8,7 +8,6 @@ import java.util.HashSet;
 @ApplicationPath("")
 public class RestApplication extends Application {
 
-
     /**
      * Initialisation code
      * @return
