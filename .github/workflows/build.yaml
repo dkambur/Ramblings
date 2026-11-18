@@ -112,6 +112,7 @@ jobs:
           # 2. Generate ConfigMap with the JSON file instead of YAML
           kubectl create configmap api-docs \
             --from-file=shuffledDeck.json=src/main/resources/swagger/api-docs/shuffledDeck.json \
+            --from-file=shuffledDeck.yaml=src/main/resources/swagger/api-docs/shuffledDeck.yaml \
             --from-file=swagger-ui.html=src/main/resources/swagger/api-docs/swagger-ui.html \
             --from-file=health=src/main/resources/swagger/health \
             -n ramblings \
